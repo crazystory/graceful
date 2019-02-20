@@ -16,8 +16,8 @@ var (
 
 type Server interface {
 	Listener() (net.Listener, error)
-	Startup(ln net.Listener)
-	Shutdown(ctx context.Context)
+	Startup(ln net.Listener) error
+	Shutdown(ctx context.Context) error
 }
 
 func Startup(servers ...Server) error {
@@ -27,14 +27,18 @@ func Startup(servers ...Server) error {
 			return err
 		}
 
-		startup(s, ln)
+		if err := startup(s, ln); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func startup(s Server, ln net.Listener) {
+func startup(s Server, ln net.Listener) error {
 	servers[s], _ = s.Listener()
 	go s.Startup(ln)
+	//@todo 加入捕获error的方法
+	return nil
 }
 
 func Wait() error {

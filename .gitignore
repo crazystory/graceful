@@ -14,3 +14,6 @@
 *.out
 
 .idea
+
+example/example.pid
+example/example
